@@ -4,15 +4,17 @@
     "・Ver.0.1.1 scale:big patch -2024/07/13"
   ],
   "detail":[
-    "",
-    "Coming soon message",
-    "Updates menu and version checker",
-    "Fixed some bugs",
+    [""],
+    [
+      "Coming soon message"
+      ,"Updates menu and version checker"
+      ,"Fixed some bugs"
+    ]
   ],
   "NextUpdatesPlan":[
     "Explorer",
-    "New spell",
-    "New cmd spell",
-    "Lock cmd spell",
+    "New spell"
+    ,"New cmd spell"
+    ,"Lock cmd spell"
   ]
 }
