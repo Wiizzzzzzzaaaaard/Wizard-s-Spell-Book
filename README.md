@@ -1,2 +1,2 @@
 Enjoy your Roblox life
-discord-->"https://discord.gg/ZzBRftGTR2"
+discord --> https://discord.gg/ZzBRftGTR2
