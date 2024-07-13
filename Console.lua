@@ -1,10 +1,10 @@
---[[Made by Wiizzzzzzzaaaaard]]
-local player = game.Players.LocalPlayer
+--[[Made by Wiizzzzzzzaaaaard discord -> https://discord.gg/ZzBRftGTR2]] 
 
+local player = game.Players.LocalPlayer
+local cloneref = cloneref or function(o) return o end
+local COREGUI = cloneref(game:GetService("CoreGui"))
 
 function MakeGUI()
-	local cloneref = cloneref or function(o) return o end
-	local COREGUI = cloneref(game:GetService("CoreGui"))
 	local gui = Instance.new("ScreenGui",COREGUI) gui.Name = "Wizard's Spell Book"	
 	local frame = Instance.new("Frame",gui)
 	local close = Instance.new("ImageButton",gui)
@@ -19,7 +19,8 @@ function MakeGUI()
 	local Title = Instance.new("TextLabel",frame) Title.Name = "Title"	
 	local CommandBox = Instance.new("TextBox",frame) CommandBox.Name = "cmdBox" 
 	local MarkUpLabel = Instance.new("TextLabel",ScrollingFrame) MarkUpLabel.Name = "MarkUpLabel"
-	local MarkUpButton = Instance.new("TextButton",ScrollingFrame) MarkUpButton.Name = "MarkUpButton"
+	local PlayerMarkUpButton = Instance.new("TextButton",ScrollingFrame) PlayerMarkUpButton.Name = "PlayerMarkUpButton"
+	local NPCMarkUpButton = Instance.new("TextButton",ScrollingFrame) PlayerMarkUpButton.Name = "MarkUpButton"	
 	local EraserFingerLavel = Instance.new("TextLabel",ScrollingFrame) EraserFingerLavel.Name = "EeaserFingerLavel"
 	local EraserButton = Instance.new("TextButton",ScrollingFrame) EraserButton.Name = "EraserButton" 
 	local EraserResetButton = Instance.new("TextButton",ScrollingFrame) EraserResetButton.Name = "EraserResetButton" 
@@ -30,9 +31,23 @@ function MakeGUI()
 	local CmdListButton = Instance.new("TextButton",frame) CmdListButton.Name = "CmdListButton"
 	local CmdListCorner = Instance.new("UICorner",CmdListButton)
 	local CmdList = Instance.new("ScrollingFrame",gui) CmdList.Name = "CmdList" 
+	local UpdsButton = Instance.new("TextButton",frame) UpdsButton.Name = "UpdsButton"
+	local VerButton = Instance.new("TextButton",frame) VerButton.Name = "VerButton"
+	local VerMessage = Instance.new("Frame",gui) VerMessage.Name = "VerMessageButton" VerMessage.Visible = false
+	local VerLabel = Instance.new("TextLabel",VerMessage) VerLabel.Name = "VerLabel"
+	local MessageLabel = Instance.new("TextLabel",VerMessage) MessageLabel.Name = "MessageLabel"
+	local ReCheckButton = Instance.new("ImageButton",VerMessage) ReCheckButton.Name = "ReCheckButton"
+	local UpdateVerButton = Instance.new("TextButton",VerMessage) UpdateVerButton.Name = "UpdateVerButton" UpdateVerButton.Visible = false
+	local IgnoreVerButton = Instance.new("TextButton",VerMessage) IgnoreVerButton.Name = "IgnoreVerButton" IgnoreVerButton.Visible = false
+	local UpdsUI = Instance.new("ScrollingFrame",gui) UpdsUI.Name = "UpdsUI" UpdsUI.Visible = false
+	local UpdsTitle = Instance.new("TextLabel",UpdsUI) UpdsTitle.Name = "Title"
+	local UpdsTitleUnderLine = Instance.new("Frame",UpdsTitle) UpdsTitleUnderLine.Name = "UnderLine"
+	local UpdsMessage = Instance.new("TextLabel",UpdsUI) UpdsMessage.Name = "UpdsMessage" UpdsMessage.Visible = false
 	
 	local RunService = game:GetService("RunService")
 	local UserInputService = game:GetService("UserInputService")
+	local HttpService = game:GetService("HttpService")
+	
 	gui.ResetOnSpawn = false
 	local isClose = false
 	local key = ";"
@@ -45,165 +60,298 @@ function MakeGUI()
 	local Until1 = false
 	local OldPosition = nil
 	local OldPosition2 = nil
-	_G.IsMarkUpping = false
+	_G.IsMarkUppingP = false
+	_G.IiMarkUppingN = false
 	local Cmds = {"to","lock"}
 	local CmdsTitle = {";to [PlayerName]",";lock [Distance] [PlayerName]"}
 	local CmdsName = {"tp","lock"}
 	local CmdClose = true
 	local ExplorerClose = false
 	local Connection
+	local VerButtonO = false
+	local CurrentVer = "0.1.0-beta"
+	local ReChecked = false
+	local IsUpdsOpen = false
 	
 	
-	gui.DisplayOrder = 1000000000
-	
-	frame.BackgroundColor3 = Color3.new(0.0941176,0.00784314,0.34902) 
-	frame.Position = UDim2.new(0.005,0,0.59,0) frame.Size = UDim2.new(0.4,0,0.4,0) 
+    do
+		gui.DisplayOrder = 1000000000
 
-	close.BackgroundTransparency = 1
-	close.ImageColor3 = Color3.new(0.611765, 0.611765, 0.611765)
-	close.Position = UDim2.new(0.0744,0,-0.032,0) 
-	close.Size = UDim2.new(0.015,0,0.031,0) 
-	close.Image = "rbxassetid://17605439347"
+		frame.BackgroundColor3 = Color3.new(0.0941176,0.00784314,0.34902) 
+		frame.Position = UDim2.new(0.005,0,0.59,0) frame.Size = UDim2.new(0.4,0,0.4,0) 
 
-	ScrollingFrame.BackgroundTransparency = 0.5
-	ScrollingFrame.Position = UDim2.new(0.039,0,0.054,0)
-	ScrollingFrame.Size = UDim2.new(0.906,0,0.768,0)
-	ScrollingFrame.BackgroundColor3 = Color3.new(1,1,1)
+		close.BackgroundTransparency = 1
+		close.ImageColor3 = Color3.new(0.611765, 0.611765, 0.611765)
+		close.Position = UDim2.new(0.0744,0,-0.032,0) 
+		close.Size = UDim2.new(0.015,0,0.031,0) 
+		close.Image = "rbxassetid://17605439347"
 
-	WalkText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
-	WalkText.BackgroundTransparency = 0.55
-	WalkText.Position = UDim2.new(0.347,0,0.035,0)
-	WalkText.Size = UDim2.new(0.262,0,0.062,0)
-	WalkText.Text = "16"
-	WalkText.PlaceholderText = "Type Number Here.."
+		ScrollingFrame.BackgroundTransparency = 0.5
+		ScrollingFrame.Position = UDim2.new(0.039,0,0.054,0)
+		--[[ScrollingFrame.Size = UDim2.new(0.906,0,0.768,0)]]
+		ScrollingFrame.Size = UDim2.new(0.831,0,0.768,0)
+		ScrollingFrame.BackgroundColor3 = Color3.new(1,1,1)
 
-	WalkLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
-	WalkLabel.Position = UDim2.new(0.04,0,0.03,0)
-	WalkLabel.Size = UDim2.new(0.262,0,0.062,0)
-	WalkLabel.Text = "WalkSpeed"
-	WalkLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		WalkText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
+		WalkText.BackgroundTransparency = 0.55
+		WalkText.Position = UDim2.new(0.347,0,0.035,0)
+		WalkText.Size = UDim2.new(0.262,0,0.062,0)
+		WalkText.Text = "16"
+		WalkText.PlaceholderText = "Type Number Here.."
 
-	JumpText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
-	JumpText.BackgroundTransparency = 0.55
-	JumpText.Position = UDim2.new(0.347,0,0.101,0)
-	JumpText.Size = UDim2.new(0.262,0,0.062,0)
-	JumpText.Text = "7.2"
-	JumpText.PlaceholderText = "Type Number Here.."
+		WalkLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
+		WalkLabel.Position = UDim2.new(0.04,0,0.03,0)
+		WalkLabel.Size = UDim2.new(0.262,0,0.062,0)
+		WalkLabel.Text = "WalkSpeed"
+		WalkLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	JumpLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
-	JumpLabel.Position = UDim2.new(0.04,0,0.108,0)
-	JumpLabel.Size = UDim2.new(0.262,0,0.062,0)
-	JumpLabel.Text = "JumpHeight"
-	JumpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		JumpText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
+		JumpText.BackgroundTransparency = 0.55
+		JumpText.Position = UDim2.new(0.347,0,0.101,0)
+		JumpText.Size = UDim2.new(0.262,0,0.062,0)
+		JumpText.Text = "7.2"
+		JumpText.PlaceholderText = "Type Number Here.."
 
-	FlyLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
-	FlyLabel.Position = UDim2.new(0.657,0,0.029,0)
-	FlyLabel.Size = UDim2.new(0.1,0,0.062,0)
-	FlyLabel.Text = "Fly"
-	FlyLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		JumpLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
+		JumpLabel.Position = UDim2.new(0.04,0,0.108,0)
+		JumpLabel.Size = UDim2.new(0.262,0,0.062,0)
+		JumpLabel.Text = "JumpHeight"
+		JumpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	FlyButton.BackgroundColor3 = Color3.new(0,0.494118,0.541176)
-	FlyButton.Position = UDim2.new(0.789,0,0.029,0)
-	FlyButton.Size = UDim2.new(0.1,0,0.062,0)
-	FlyButton.Text = "[F]"
-	FlyButton.TextColor3 = Color3.new(0,0,0)
+		FlyLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
+		FlyLabel.Position = UDim2.new(0.657,0,0.029,0)
+		FlyLabel.Size = UDim2.new(0.1,0,0.062,0)
+		FlyLabel.Text = "Fly"
+		FlyLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	Title.BackgroundColor3 = Color3.new(0.34902,0.0156863,0.545098)
-	Title.Position = UDim2.new(0.197,0,-0.147,0)
-	Title.Size = UDim2.new(0.551,0,0.141,0)
-	Title.Text = "Wizard's Spell Book"
-	Title.TextColor3 = Color3.new(1, 0.643137, 0.0313725)
-	Title.Font = Enum.Font.SourceSansBold
-	Title.RichText = true
-	Title.TextScaled = true
-	Title.TextWrapped = true
-	Title.TextStrokeTransparency = 0
+		FlyButton.BackgroundColor3 = Color3.new(0,0.494118,0.541176)
+		FlyButton.Position = UDim2.new(0.789,0,0.029,0)
+		FlyButton.Size = UDim2.new(0.1,0,0.062,0)
+		FlyButton.Text = "[F]"
+		FlyButton.TextColor3 = Color3.new(0,0,0)
 
-	CommandBox.BackgroundColor3 = Color3.new(1,1,1)
-	CommandBox.BackgroundTransparency = 0.75
-	CommandBox.Position = UDim2.new(0.234,0,0.851,0)
-	CommandBox.Size = UDim2.new(0.515,0,0.116,0)
-	CommandBox.Text = ""
-	CommandBox.PlaceholderText = "Type Spell Here..(cmd)"
-	CommandBox.TextColor3 = Color3.new(1,0.854902,0.0196078)
-	
-	EraserFingerLavel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
-	EraserFingerLavel.Position = UDim2.new(0.04,0,0.19,0)
-	EraserFingerLavel.Size = UDim2.new(0.262,0,0.062,0)
-	EraserFingerLavel.Text = "EraserFinger"
-	EraserFingerLavel.TextColor3 = Color3.new(1,0.854902,0.0196078)
-	
-	MarkUpLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
-	MarkUpLabel.Position = UDim2.new(0.657,0,0.097,0)
-	MarkUpLabel.Size = UDim2.new(0.1,0,0.062,0)
-	MarkUpLabel.Text = "MarkUp"
-	MarkUpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		Title.BackgroundColor3 = Color3.new(0.34902,0.0156863,0.545098)
+		Title.Position = UDim2.new(0.197,0,-0.147,0)
+		Title.Size = UDim2.new(0.551,0,0.141,0)
+		Title.Text = "Wizard's Spell Book"
+		Title.TextColor3 = Color3.new(1, 0.643137, 0.0313725)
+		Title.Font = Enum.Font.SourceSansBold
+		Title.RichText = true
+		Title.TextScaled = true
+		Title.TextWrapped = true
+		Title.TextStrokeTransparency = 0
 
-	MarkUpButton.BackgroundColor3 = Color3.new(0.541176, 0, 0)
-	MarkUpButton.Position = UDim2.new(0.789,0,0.097,0)
-	MarkUpButton.Size = UDim2.new(0.1,0,0.062,0)
-	MarkUpButton.Text = "off"
-	MarkUpButton.TextColor3 = Color3.new(0,0,0)
+		CommandBox.BackgroundColor3 = Color3.new(1,1,1)
+		CommandBox.BackgroundTransparency = 0.75
+		CommandBox.Position = UDim2.new(0.234,0,0.851,0)
+		CommandBox.Size = UDim2.new(0.515,0,0.116,0)
+		CommandBox.Text = ""
+		CommandBox.PlaceholderText = "Type Spell Here..(cmd)"
+		CommandBox.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	EraserButton.BackgroundColor3 = Color3.new(0.541176,0,0)
-	EraserButton.Position = UDim2.new(0.346,0,0.188,0)
-	EraserButton.Size = UDim2.new(0.1,0,0.062,0)
-	EraserButton.Text = "off"
-	EraserButton.TextColor3 = Color3.new(0,0,0)
+		EraserFingerLavel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
+		EraserFingerLavel.Position = UDim2.new(0.04,0,0.19,0)
+		EraserFingerLavel.Size = UDim2.new(0.262,0,0.062,0)
+		EraserFingerLavel.Text = "EraserFinger"
+		EraserFingerLavel.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	EraserResetButton.BackgroundColor3 = Color3.new(0.423529,0.423529,0.423529)
-	EraserResetButton.Position = UDim2.new(0.476,0,0.213,0)
-	EraserResetButton.Size = UDim2.new(0.1,0,-0.033,0)
-	EraserResetButton.Text = "Reset"
-	EraserResetButton.TextColor3 = Color3.new(0,0,0)
-	
-	ShowButton.BackgroundColor3 = Color3.new(0.541176,0,0)
-	ShowButton.Position = UDim2.new(0.476,0,0.259,0)
-	ShowButton.Size = UDim2.new(0.1,0,-0.033,0)
-	ShowButton.Text = "Show"
-	ShowButton.TextColor3 = Color3.new(0,0,0)
-	
-	ExplorerTxt.BackgroundColor3 = Color3.new(0.431373,0,0.537255)
-	ExplorerTxt.Position = UDim2.new(0.657,0,0.186,0)
-	ExplorerTxt.Size = UDim2.new(0.1,0,0.062,0)
-	ExplorerTxt.Text = "Explorer"
-	ExplorerTxt.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		MarkUpLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
+		MarkUpLabel.Position = UDim2.new(0.657,0,0.097,0)
+		MarkUpLabel.Size = UDim2.new(0.1,0,0.062,0)
+		MarkUpLabel.Text = "MarkUp"
+		MarkUpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
 
-	ExplorerButton.BackgroundColor3 = Color3.new(0.541176, 0, 0)
-	ExplorerButton.Position = UDim2.new(0.789,0,0.186,0)
-	ExplorerButton.Size = UDim2.new(0.1,0,0.062,0)
-	ExplorerButton.Text = "off"
-	ExplorerButton.TextColor3 = Color3.new(0,0,0)
-	
-	OutputText.BackgroundColor3 = Color3.new(0.223529,0,0.478431)
-	OutputText.BackgroundTransparency = 0.6
-	OutputText.Position = UDim2.new(0,0,0.035,0)
-	OutputText.Size = UDim2.new(1,0,0.065,0)
-	OutputText.TextColor3 = Color3.new(1,0.705882,0.0196078)
-	OutputText.RichText = true
-	OutputText.TextScaled = true
-	OutputText.TextWrapped = true
-	OutputText.TextStrokeTransparency = 0
-	OutputText.Font = Enum.Font.SourceSansBold
-	OutputText.Visible = false
-	
-	CmdListButton.BackgroundColor3 = Color3.new(0.368627,0.00392157,0.670588)
-	CmdListButton.Position = UDim2.new(0.17,0,0.868,0)
-	CmdListButton.Size = UDim2.new(0.046,0,0.078,0)
-	CmdListButton.Text = "?"
-	CmdListButton.RichText = true
-	CmdListButton.TextScaled = true
-	CmdListButton.TextWrapped = true
-	CmdListButton.TextColor3 = Color3.new(1,0.666667,0.00392157)
-	CmdListButton.Font = Enum.Font.SourceSansBold
-	
-	CmdList.BackgroundColor3 = Color3.new(0.215686,0,0.407843)
-	CmdList.BackgroundTransparency = 0.2
-	CmdList.BorderColor3 = Color3.new(1,0.643137,0.0235294)
-	CmdList.Position = UDim2.new(0.324,0,0.31,0)
-	CmdList.Size = UDim2.new(0.265,0,0.276,0)
-	CmdList.ScrollBarImageColor3 = Color3.new(1,0.717647,0.00392157)
-	CmdList.Visible = false
+		PlayerMarkUpButton.BackgroundColor3 = Color3.new(0.541176, 0, 0)
+		PlayerMarkUpButton.Position = UDim2.new(0.789,0,0.1,0)
+		PlayerMarkUpButton.Size = UDim2.new(0.1,0,0.029,0)
+		PlayerMarkUpButton.Text = "Player"
+		PlayerMarkUpButton.TextColor3 = Color3.new(0,0,0)
+
+		NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176, 0, 0)
+		NPCMarkUpButton.Position = UDim2.new(0.789,0,0.14,0)
+		NPCMarkUpButton.Size = UDim2.new(0.1,0,0.029,0)
+		NPCMarkUpButton.Text = "NPC"
+		NPCMarkUpButton.TextColor3 = Color3.new(0,0,0)
+
+		EraserButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+		EraserButton.Position = UDim2.new(0.346,0,0.188,0)
+		EraserButton.Size = UDim2.new(0.1,0,0.062,0)
+		EraserButton.Text = "off"
+		EraserButton.TextColor3 = Color3.new(0,0,0)
+
+		EraserResetButton.BackgroundColor3 = Color3.new(0.423529,0.423529,0.423529)
+		EraserResetButton.Position = UDim2.new(0.476,0,0.213,0)
+		EraserResetButton.Size = UDim2.new(0.1,0,-0.033,0)
+		EraserResetButton.Text = "Reset"
+		EraserResetButton.TextColor3 = Color3.new(0,0,0)
+
+		ShowButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+		ShowButton.Position = UDim2.new(0.476,0,0.259,0)
+		ShowButton.Size = UDim2.new(0.1,0,-0.033,0)
+		ShowButton.Text = "Show"
+		ShowButton.TextColor3 = Color3.new(0,0,0)
+
+		ExplorerTxt.BackgroundColor3 = Color3.new(0.431373,0,0.537255)
+		ExplorerTxt.Position = UDim2.new(0.657,0,0.186,0)
+		ExplorerTxt.Size = UDim2.new(0.1,0,0.062,0)
+		ExplorerTxt.Text = "Explorer"
+		ExplorerTxt.TextColor3 = Color3.new(1,0.854902,0.0196078)
+
+		ExplorerButton.BackgroundColor3 = Color3.new(0.541176, 0, 0)
+		ExplorerButton.Position = UDim2.new(0.789,0,0.186,0)
+		ExplorerButton.Size = UDim2.new(0.1,0,0.062,0)
+		ExplorerButton.Text = "off"
+		ExplorerButton.TextColor3 = Color3.new(0,0,0)
+
+		OutputText.BackgroundColor3 = Color3.new(0.223529,0,0.478431)
+		OutputText.BackgroundTransparency = 0.6
+		OutputText.Position = UDim2.new(0,0,0.035,0)
+		OutputText.Size = UDim2.new(1,0,0.065,0)
+		OutputText.TextColor3 = Color3.new(1,0.705882,0.0196078)
+		OutputText.RichText = true
+		OutputText.TextScaled = true
+		OutputText.TextWrapped = true
+		OutputText.TextStrokeTransparency = 0
+		OutputText.Font = Enum.Font.SourceSansBold
+		OutputText.Visible = false
+
+		CmdListButton.BackgroundColor3 = Color3.new(0.368627,0.00392157,0.670588)
+		CmdListButton.Position = UDim2.new(0.17,0,0.868,0)
+		CmdListButton.Size = UDim2.new(0.046,0,0.078,0)
+		CmdListButton.Text = "?"
+		CmdListButton.RichText = true
+		CmdListButton.TextScaled = true
+		CmdListButton.TextWrapped = true
+		CmdListButton.TextColor3 = Color3.new(1,0.666667,0.00392157)
+		CmdListButton.Font = Enum.Font.SourceSansBold
+
+		CmdList.BackgroundColor3 = Color3.new(0.215686,0,0.407843)
+		CmdList.BackgroundTransparency = 0.2
+		CmdList.BorderColor3 = Color3.new(1,0.643137,0.0235294)
+		CmdList.Position = UDim2.new(0.201,0,0.22,0)
+		CmdList.Size = UDim2.new(0.265,0,0.276,0)
+		CmdList.ScrollBarImageColor3 = Color3.new(1,0.717647,0.00392157)
+		CmdList.Visible = false
+		
+		VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
+		VerButton.Position = UDim2.new(0.892,0,0.123,0)
+		VerButton.Size = UDim2.new(0.088,0,0.145,0)
+		VerButton.BorderColor3 = Color3.new(0.737255,0.498039,0.0156863)
+		VerButton.BorderSizePixel = 1
+		VerButton.TextColor3 = Color3.new(1,0.717647,0.00784314)
+		VerButton.TextStrokeColor3 = Color3.new(0.384314,0.309804,0.00392157)
+		VerButton.TextTransparency = 0
+		VerButton.Text = ".Ver"
+		VerButton.Font = Enum.Font.SourceSansBold
+		VerButton.TextSize = 14
+		
+		UpdsButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
+		UpdsButton.Position = UDim2.new(0.892,0,0.331,0)
+		UpdsButton.Size = UDim2.new(0.088,0,0.145,0)
+		UpdsButton.BorderColor3 = Color3.new(0.737255,0.498039,0.0156863)
+		UpdsButton.BorderSizePixel = 1
+		UpdsButton.TextColor3 = Color3.new(1,0.717647,0.00784314)
+		UpdsButton.TextStrokeColor3 = Color3.new(0.384314,0.309804,0.00392157)
+		UpdsButton.TextTransparency = 0
+		UpdsButton.Text = ".Upds"
+		UpdsButton.Font = Enum.Font.SourceSansBold
+		UpdsButton.TextSize = 14
+		
+		VerMessage.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
+		VerMessage.BackgroundTransparency = 0.2
+		VerMessage.BorderColor3 = Color3.new(1,0.639216,0.0196078)
+		VerMessage.BorderSizePixel = 1
+		VerMessage.Position = UDim2.new(0.212,0,0.249,0)
+		VerMessage.Size = UDim2.new(0.265,0,0.276,0)
+		
+		VerLabel.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
+		VerLabel.BackgroundTransparency = 0.4
+		VerLabel.BorderColor3 = Color3.new(1,0.639216,0.0196078)
+		VerLabel.BorderSizePixel = 1
+		VerLabel.Position = UDim2.new(0.204,0,0.069,0)
+		VerLabel.Size = UDim2.new(0.585,0,0.18,0)
+		VerLabel.Font = Enum.Font.SourceSansBold 
+		VerLabel.RichText = true
+		VerLabel.TextScaled = true
+		VerLabel.TextWrapped = true
+		VerLabel.TextColor3 = Color3.new(1,0.717647,0)
+		VerLabel.Text = "Ver."..CurrentVer
+		
+		MessageLabel.BackgroundTransparency = 1
+		MessageLabel.Position = UDim2.new(0.107,0,0.332,0)
+		MessageLabel.Size = UDim2.new(0.782,0,0.109,0)
+		MessageLabel.Font = Enum.Font.SourceSansBold 
+		MessageLabel.RichText = true
+		MessageLabel.TextScaled = true
+		MessageLabel.TextWrapped = true
+		MessageLabel.TextColor3 = Color3.new(1,0.717647,0)
+		
+		ReCheckButton.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
+		ReCheckButton.BackgroundTransparency = 0.4
+		ReCheckButton.BorderColor3 = Color3.new(1,0.705882,0.0196078)
+		ReCheckButton.BorderSizePixel = 1
+		ReCheckButton.Position = UDim2.new(0.833,0,0.069,0)
+		ReCheckButton.Size = UDim2.new(0.11,0,0.18,0)
+		ReCheckButton.Image = "rbxassetid://13364258627"
+		
+		UpdateVerButton.BackgroundColor3 = Color3.new(0.0705882,0.623529,0.00784314)
+		UpdateVerButton.BorderColor3 = Color3.new(0,0,0)
+		UpdateVerButton.BorderSizePixel = 1
+		UpdateVerButton.Position = UDim2.new(0.305,0,0.72,0)
+		UpdateVerButton.Size = UDim2.new(0.17,0,0.2,0)
+		UpdateVerButton.Font = Enum.Font.SourceSansBold 
+		UpdateVerButton.RichText = true
+		UpdateVerButton.TextScaled = true
+		UpdateVerButton.TextWrapped = true
+		UpdateVerButton.Text = "Yes"
+		
+		IgnoreVerButton.BackgroundColor3 = Color3.new(0.588235,0,0)
+		IgnoreVerButton.BorderColor3 = Color3.new(0,0,0)
+		IgnoreVerButton.BorderSizePixel = 1
+		IgnoreVerButton.Position = UDim2.new(0.522,0,0.72,0)
+		IgnoreVerButton.Size = UDim2.new(0.17,0,0.2,0)
+		IgnoreVerButton.Font = Enum.Font.SourceSansBold 
+		IgnoreVerButton.RichText = true
+		IgnoreVerButton.TextScaled = true
+		IgnoreVerButton.TextWrapped = true
+		IgnoreVerButton.Text = "No"
+		
+		UpdsUI.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
+		UpdsUI.BackgroundTransparency = 0.2
+		UpdsUI.BorderColor3 = Color3.new(1,0.639216,0.0196078)
+		UpdsUI.BorderSizePixel = 1
+		UpdsUI.Position = UDim2.new(0.223,0,0.268,0)
+		UpdsUI.Size = UDim2.new(0.265,0,0.276,0)
+		UpdsUI.CanvasSize = UDim2.new(0,0,1,0)
+		UpdsUI.ScrollBarImageColor3 = Color3.new(1,0.713725,0.00392157)
+		UpdsUI.ScrollBarThickness = 6
+		
+		UpdsTitle.BackgroundTransparency = 1
+		UpdsTitle.Position = UDim2.new(0.222,0,0.02,0)
+		UpdsTitle.Size = UDim2.new(0.558,0,0.029,0)
+		UpdsTitle.Font = Enum.Font.SourceSansBold
+		UpdsTitle.Text = "Updates log"
+		UpdsTitle.TextColor3 = Color3.new(1,0.74902,0)
+		UpdsTitle.RichText = true
+		UpdsTitle.TextScaled = true
+		UpdsTitle.TextWrapped = true
+		UpdsTitle.TextSize = 14
+		
+		UpdsTitleUnderLine.BackgroundColor3 = Color3.new(1,0.74902,0)
+		UpdsTitleUnderLine.Position = UDim2.new(0,0,1,0)
+		UpdsTitleUnderLine.Size = UDim2.new(1,0,0.1,0)
+		
+		UpdsMessage.BackgroundTransparency = 1
+		UpdsMessage.Position = UDim2.new(0.15,0,0.1,0)
+		UpdsMessage.Size = UDim2.new(0.7,0,0.03,0)
+		UpdsMessage.Font = Enum.Font.SourceSansBold
+		UpdsMessage.RichText = true
+		UpdsMessage.TextScaled = true
+		UpdsMessage.TextWrapped = true
+		UpdsMessage.TextColor3 = Color3.new(1,0.74902,0)
+		UpdsMessage.Text = "...Loading data..."
+		
+	end
 	
 	local function One(TargetPlayer)
 		player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,10,0)
@@ -331,9 +479,27 @@ function MakeGUI()
 		end
 	end)
 	
-	MarkUpButton.Activated:Connect(function()
+	PlayerMarkUpButton.Activated:Connect(function()
+		if not _G.IsMarkUppingP then
+			_G.IsMarkUppingP = true PlayerMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+			wait(0.1)
+			for i,p in ipairs(game:GetService("Players"):GetChildren()) do
+				local Highlight = Instance.new("Highlight")
+				Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "MarkSpell" Highlight.Parent = p.Character
+			end
+		elseif _G.IsMarkUppingP == true then
+			_G.IsMarkUppingP = false PlayerMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			for i,p in ipairs(game:GetService("Players"):GetChildren()) do
+				if p.Character:FindFirstChild("MarkSpell") then
+					p.Character.MarkSpell:Destroy()
+				end
+			end
+		end
+	end)
+	
+	NPCMarkUpButton.Activated:Connect(function()
 		if not _G.IsMarkUpping then
-			_G.IsMarkUpping = true MarkUpButton.Text = "on" MarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+			_G.IsMarkUpping = true NPCMarkUpButton.Text = "on" NPCMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
 			wait(0.1)
 			for i,obj in ipairs(game.Workspace:GetDescendants()) do
 				if obj:FindFirstChild("Humanoid") and not obj:FindFirstChild("MarkSpell") then
@@ -342,7 +508,7 @@ function MakeGUI()
 				end
 			end
 		elseif _G.IsMarkUpping == true then
-			_G.IsMarkUpping = false MarkUpButton.Text = "off" MarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			_G.IsMarkUpping = false NPCMarkUpButton.Text = "off" NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
 			for i,obj in ipairs(game.Workspace:GetDescendants()) do
 				if obj:FindFirstChild("MarkSpell") then
 					obj.MarkSpell:Destroy()
@@ -423,6 +589,10 @@ function MakeGUI()
 		end
 	end)
 	
+	FlyButton.Activated:Connect(function()
+		Output("Coming soon",1)
+	end)
+	
 	local function Explorer()
 		local ExplorerFlame = Instance.new("ScrollingFrame",gui)
 		
@@ -430,13 +600,184 @@ function MakeGUI()
 	
 	ExplorerButton.Activated:Connect(function()
 		if not ExplorerClose then
-			ExplorerClose = true ExplorerButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+			ExplorerClose = true ExplorerButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725) ExplorerButton.Text = "On"
 			Explorer()
 		else
-			ExplorerClose = false ExplorerButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			ExplorerClose = false ExplorerButton.BackgroundColor3 = Color3.new(0.541176,0,0) ExplorerButton.Text = "Off"
+		end
+		Output("Coming Soon",1)
+	end)
+	
+	VerButton.Activated:Connect(function()
+		if not VerButtonO then
+			VerButtonO = true VerMessage.Visible = true VerButton.BackgroundColor3 = Color3.new(0.12549,0,0.137255)
+			MessageLabel.Text = "...Checking version..."
+			local success,responce = pcall(function()
+				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Ver.lua",true))()
+			end)
+			local GotVer = _G.GotVer
+			if success and GotVer then
+				if GotVer ~= CurrentVer then
+					MessageLabel.Text = "Version isn't newest! will you use newest version?"
+					UpdateVerButton.Visible = true IgnoreVerButton.Visible = true
+					IgnoreVerButton.Activated:Connect(function()
+						UpdateVerButton.Visible = false IgnoreVerButton.Visible = false VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
+					end)
+					UpdateVerButton.Activated:Connect(function()
+						VerButtonO = false VerMessage.Visible = false
+						loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Console.lua",true))()
+					end)
+				else
+					MessageLabel.Text = "Version is newest"
+				end
+			else
+				wait(0.1)
+				MessageLabel.Text = "Something went wrong! please try again."
+			end
+		else
+			VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745) MessageLabel.Text = ""
 		end
 	end)
 	
+	ReCheckButton.Activated:Connect(function()
+		if not ReChecked then
+			ReChecked = true
+			MessageLabel.Text = "...Checking version..."
+			local success,responce = pcall(function()
+				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Ver.lua",true))()
+			end)	
+			local GotVer = _G.GotVer
+			if success and GotVer then
+				if GotVer ~= CurrentVer then
+					MessageLabel.Text = "Version isn't newest! will you use newest version?"
+					UpdateVerButton.Visible = true IgnoreVerButton.Visible = true
+					IgnoreVerButton.Activated:Connect(function()
+						UpdateVerButton.Visible = false IgnoreVerButton.Visible = false VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
+					end)
+					UpdateVerButton.Activated:Connect(function()
+						VerButtonO = false VerMessage.Visible = false
+						loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Console.lua",true))()
+					end)
+				else
+					MessageLabel.Text = "Version is newest"
+				end
+			else
+				wait(0.1)
+				MessageLabel.Text = "Something went wrong! please try again."
+			end
+			wait(1)
+			ReChecked = false
+		end
+	end)
+	
+	UpdsButton.Activated:Connect(function()
+		if not IsUpdsOpen  then
+			IsUpdsOpen = true UpdsUI.Visible = true UpdsButton.BackgroundColor3 = Color3.new(0.12549,0,0.137255) UpdsMessage.Visible = true UpdsMessage.Text = "...Loading data..."
+			local success,UpdsData = pcall(function() 
+				return game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Upds.json") 
+			end)
+			if success then
+				UpdsMessage.Text = "" UpdsMessage.Visible = false
+				local LuaTable = HttpService:JSONDecode(UpdsData)
+				local LastGUI
+				local Folder = Instance.new("Folder",UpdsUI) Folder.Name = "This"
+				for i,v in ipairs(LuaTable.ver) do
+					local TextLabel = Instance.new("TextLabel",Folder) TextLabel.Name = "v"
+					TextLabel.BackgroundTransparency = 1
+					TextLabel.Size = UDim2.new(0.7,0,0.04,0)
+					TextLabel.Font = Enum.Font.SourceSansBold
+					TextLabel.TextColor3 = Color3.new(1,0.74902,0)
+					TextLabel.RichText = true
+					TextLabel.TextScaled = true
+					TextLabel.TextWrapped = true
+					TextLabel.TextSize = 14
+					TextLabel.Text = v
+					if LastGUI then 
+						if LastGUI.Text ~= "" then
+							TextLabel.Position = UDim2.new(0.06,0,LastGUI.Position.Y.Scale+0.05,0) 
+						else
+							TextLabel.Position = UDim2.new(0.06,0,LastGUI.Position.Y.Scale,0)
+						end
+					else 
+						TextLabel.Position = UDim2.new(0.06,0,0.07,0) 
+					end 
+					LastGUI = TextLabel
+					for i2,d in ipairs(LuaTable.detail[i]) do
+						wait(0.1)
+						local TextLabel = Instance.new("TextLabel",Folder) TextLabel.Name = "d"
+						TextLabel.BackgroundTransparency = 1
+						TextLabel.Size = UDim2.new(0.6,0,0.025,0)
+						TextLabel.Font = Enum.Font.SourceSansBold
+						TextLabel.TextColor3 = Color3.new(1,0.74902,0)
+						TextLabel.RichText = true
+						TextLabel.TextScaled = true
+						TextLabel.TextWrapped = true
+						TextLabel.TextSize = 14
+						TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+						if d~="" then TextLabel.Text = "+ "..d else TextLabel.Text = "" end
+						if LastGUI.Name~="v" then 
+							TextLabel.Position = UDim2.new(0.22,0,LastGUI.Position.Y.Scale+0.025,0) LastGUI = TextLabel 
+						else 
+							TextLabel.Position = UDim2.new(0.22,0,LastGUI.Position.Y.Scale+0.04,0) LastGUI = TextLabel
+						end
+					end
+				end
+				local NextUpdsPlanLabel = Instance.new("TextLabel",Folder) NextUpdsPlanLabel.Name = "NextUpdsPlanLabel"
+				local UnderLine = Instance.new("Frame",NextUpdsPlanLabel) UnderLine.Name = "UnderLine"
+				NextUpdsPlanLabel.BackgroundTransparency = 1
+				NextUpdsPlanLabel.Size = UDim2.new(0.56,0,0.03,0)
+				NextUpdsPlanLabel.Font = Enum.Font.SourceSansBold
+				NextUpdsPlanLabel.TextColor3 = Color3.new(1,0.74902,0)
+				NextUpdsPlanLabel.RichText = true
+				NextUpdsPlanLabel.TextScaled = true
+				NextUpdsPlanLabel.TextWrapped = true
+				NextUpdsPlanLabel.TextSize = 14
+				NextUpdsPlanLabel.Text = "Next updates plan"
+				NextUpdsPlanLabel.Position = UDim2.new(0.22,0,LastGUI.Position.Y.Scale+0.05,0)
+				LastGUI = NextUpdsPlanLabel
+				UnderLine.BackgroundColor3 = Color3.new(1,0.74902,0)
+				UnderLine.Position = UDim2.new(0,0,1,0)
+				UnderLine.Size = UDim2.new(1,0,0.1,0)
+
+				for i,p in ipairs(LuaTable.NextUpdatesPlan) do
+					local UP = Instance.new("TextLabel",Folder) UP.Name = "UP"
+					UP.BackgroundTransparency = 1
+					UP.Size = UDim2.new(0.6,0,0.027,0)
+					UP.Font = Enum.Font.SourceSansBold
+					UP.TextColor3 = Color3.new(1,0.74902,0)
+					UP.RichText = true
+					UP.TextScaled = true
+					UP.TextWrapped = true
+					UP.TextSize = 14
+					UP.TextXAlignment = Enum.TextXAlignment.Left
+					if LastGUI.Name~="Next updates plan" then
+						UP.Position = UDim2.new(0.23,0,LastGUI.Position.Y.Scale+0.03,0)
+					else
+						UP.Position = UDim2.new(0.23,0,LastGUI.Position.Y.Scale+0.04,0)
+					end
+					UP.Text = "# "..p
+					LastGUI = UP
+				end
+				local aso = Instance.new("TextLabel",Folder) aso.Name = "aso"
+				aso.BackgroundTransparency = 1
+				aso.Size = UDim2.new(0.2,0,0.025,0)
+				aso.Font = Enum.Font.SourceSansBold
+				aso.TextColor3 = Color3.new(1,0.74902,0)
+				aso.RichText = true
+				aso.TextScaled = true
+				aso.TextWrapped = true
+				aso.TextSize = 14
+				aso.TextXAlignment = Enum.TextXAlignment.Left
+				aso.Position = UDim2.new(0.6,0,LastGUI.Position.Y.Scale+0.02,0)
+				aso.Text = "...and so on"
+			else
+				wait(0.1)
+				UpdsMessage.Text = "Something went wrong! please try again."
+			end
+		else
+			IsUpdsOpen = false UpdsUI.Visible = false UpdsButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745) UpdsUI:FindFirstChild("This"):Destroy()	
+		end
+	end)
 end
 
 function Find()
@@ -450,8 +791,7 @@ end
 do 
 	local WizardsSpellBook = Find()
 	if WizardsSpellBook then
-		local AnnounceGUI = Instance.new("ScreenGui") AnnounceGUI.Name = "AnnounceGUI"
-		AnnounceGUI.Parent = player.PlayerGui
+		local AnnounceGUI = Instance.new("ScreenGui",cloneref) AnnounceGUI.Name = "AnnounceGUI"
 		local Frame = Instance.new("Frame")
 		Frame.Parent = AnnounceGUI
 		Frame.Size = UDim2.new(0.46,0,0.323,0) Frame.BackgroundColor3 = Color3.new(0.247059,0,0.372549) Frame.Position = UDim2.new(0.269,0,0.06,0) Frame.BorderSizePixel = 2
@@ -479,3 +819,4 @@ do
 		MakeGUI()
 	end
 end
+
