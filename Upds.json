@@ -1,0 +1,12 @@
+{
+  "ver":[
+    "・Beta released -2024/06/16",
+    "・Ver.0.1.1 scale:big patch -2024/07/13"
+  ],
+  "detail":[
+    "added 'coming soon' message, updates menu, version checker and fixed some bugs"
+  ],
+  "NextUpdatesPlan":[
+    "add explorer, add new spell, add new cmd spell, add lock cmd spell and so on"
+  ]
+}
