@@ -69,10 +69,11 @@ function MakeGUI()
 	local ExplorerClose = false
 	local Connection
 	local VerButtonO = false
-	local CurrentVer = "0.1.0-beta"
 	local ReChecked = false
 	local IsUpdsOpen = false
 	
+	local CurrentVer = "0.1.1-beta"
+
 	
     do
 		gui.DisplayOrder = 1000000000
