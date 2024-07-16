@@ -6,15 +6,15 @@
   "detail":[
     [""],
     [
-      "Coming soon message"
-      ,"Updates menu and version checker(auto)"
-      ,"Fixed some bugs"
+      "Coming soon message",
+      "Updates menu and version checker(auto)",
+      "Fixed some bugs"
     ]
   ],
   "NextUpdatesPlan":[
     "Explorer",
-    "New spell"
-    ,"New cmd spell"
-    ,"Lock cmd spell"
+    "New spell",
+    "New cmd spell",
+    "Lock cmd spell"
   ]
 }
