@@ -15,13 +15,13 @@
       "Fixed some bugs",
       "Fixed walk system",
       "Fixed wsb link",
-      "Fixed markup spell",
-    ],
+      "Fixed markup spell"
+    ]
   ],
   "NextUpdatesPlan":[
     "Explorer",
     "New spell",
     "New cmd spell",
     "Lock cmd spell"
-  ],
+  ]
 }
