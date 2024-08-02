@@ -1,10 +1,10 @@
 {
-  "ver":[
+  "ver": [
     "・Beta released -2024/06/16",
     "・Ver.0.1.1 scale:big patch -2024/07/13",
-    "・ver.0.1.2 scale:big patch -2024/08/02"
+    "・Ver.0.1.2 scale:big patch -2024/08/02"
   ],
-  "detail":[
+  "detail": [
     [""],
     [
       "Coming soon message",
@@ -18,7 +18,7 @@
       "Fixed markup spell"
     ]
   ],
-  "NextUpdatesPlan":[
+  "NextUpdatesPlan": [
     "Explorer",
     "New spell",
     "New cmd spell",
