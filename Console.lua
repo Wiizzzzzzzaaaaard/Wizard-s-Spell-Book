@@ -43,11 +43,13 @@ function MakeGUI()
 	local UpdsTitle = Instance.new("TextLabel",UpdsUI) UpdsTitle.Name = "Title"
 	local UpdsTitleUnderLine = Instance.new("Frame",UpdsTitle) UpdsTitleUnderLine.Name = "UnderLine"
 	local UpdsMessage = Instance.new("TextLabel",UpdsUI) UpdsMessage.Name = "UpdsMessage" UpdsMessage.Visible = false
-	
+	local WalkToggle = Instance.new("TextButton",ScrollingFrame) WalkToggle.Name = "WalkToggle" 
+	local JumpToggle = Instance.new("TextButton",ScrollingFrame) JumpToggle.Name = "JumpToggle"
+
 	local RunService = game:GetService("RunService")
 	local UserInputService = game:GetService("UserInputService")
 	local HttpService = game:GetService("HttpService")
-	
+
 	gui.ResetOnSpawn = false
 	local isClose = false
 	local key = ";"
@@ -71,11 +73,15 @@ function MakeGUI()
 	local VerButtonO = false
 	local ReChecked = false
 	local IsUpdsOpen = false
-	
-	local CurrentVer = "0.1.1-beta"
+	local RunMarkN
+	local RunMarkP
+	local IsWalking = false
+	local IsJumping = false
 
-	
-    do
+	local CurrentVer = "0.1.2-beta"
+
+
+	do
 		gui.DisplayOrder = 1000000000
 
 		frame.BackgroundColor3 = Color3.new(0.0941176,0.00784314,0.34902) 
@@ -96,7 +102,7 @@ function MakeGUI()
 		WalkText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
 		WalkText.BackgroundTransparency = 0.55
 		WalkText.Position = UDim2.new(0.347,0,0.035,0)
-		WalkText.Size = UDim2.new(0.262,0,0.062,0)
+		WalkText.Size = UDim2.new(0.2,0,0.062,0)
 		WalkText.Text = "16"
 		WalkText.PlaceholderText = "Type Number Here.."
 
@@ -105,11 +111,16 @@ function MakeGUI()
 		WalkLabel.Size = UDim2.new(0.262,0,0.062,0)
 		WalkLabel.Text = "WalkSpeed"
 		WalkLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		
+		WalkToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
+		WalkToggle.Position = UDim2.new(0.56,0,0.039,0)
+		WalkToggle.Size = UDim2.new(0.06,0,0.05,0)
+		WalkToggle.Text = "off"
 
 		JumpText.BackgroundColor3 = Color3.new(0.121569, 0.121569, 0.121569)
 		JumpText.BackgroundTransparency = 0.55
 		JumpText.Position = UDim2.new(0.347,0,0.101,0)
-		JumpText.Size = UDim2.new(0.262,0,0.062,0)
+		JumpText.Size = UDim2.new(0.2,0,0.062,0)
 		JumpText.Text = "7.2"
 		JumpText.PlaceholderText = "Type Number Here.."
 
@@ -118,6 +129,11 @@ function MakeGUI()
 		JumpLabel.Size = UDim2.new(0.262,0,0.062,0)
 		JumpLabel.Text = "JumpHeight"
 		JumpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
+		
+		JumpToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
+		JumpToggle.Position = UDim2.new(0.56,0,0.11,0)
+		JumpToggle.Size = UDim2.new(0.06,0,0.05,0)
+		JumpToggle.Text = "off"
 
 		FlyLabel.BackgroundColor3 = Color3.new(0.431373,0,0.541176)
 		FlyLabel.Position = UDim2.new(0.657,0,0.029,0)
@@ -233,7 +249,7 @@ function MakeGUI()
 		CmdList.Size = UDim2.new(0.265,0,0.276,0)
 		CmdList.ScrollBarImageColor3 = Color3.new(1,0.717647,0.00392157)
 		CmdList.Visible = false
-		
+
 		VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 		VerButton.Position = UDim2.new(0.892,0,0.123,0)
 		VerButton.Size = UDim2.new(0.088,0,0.145,0)
@@ -245,7 +261,7 @@ function MakeGUI()
 		VerButton.Text = ".Ver"
 		VerButton.Font = Enum.Font.SourceSansBold
 		VerButton.TextSize = 14
-		
+
 		UpdsButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 		UpdsButton.Position = UDim2.new(0.892,0,0.331,0)
 		UpdsButton.Size = UDim2.new(0.088,0,0.145,0)
@@ -257,14 +273,14 @@ function MakeGUI()
 		UpdsButton.Text = ".Upds"
 		UpdsButton.Font = Enum.Font.SourceSansBold
 		UpdsButton.TextSize = 14
-		
+
 		VerMessage.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
 		VerMessage.BackgroundTransparency = 0.2
 		VerMessage.BorderColor3 = Color3.new(1,0.639216,0.0196078)
 		VerMessage.BorderSizePixel = 1
 		VerMessage.Position = UDim2.new(0.212,0,0.249,0)
 		VerMessage.Size = UDim2.new(0.265,0,0.276,0)
-		
+
 		VerLabel.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
 		VerLabel.BackgroundTransparency = 0.4
 		VerLabel.BorderColor3 = Color3.new(1,0.639216,0.0196078)
@@ -277,7 +293,7 @@ function MakeGUI()
 		VerLabel.TextWrapped = true
 		VerLabel.TextColor3 = Color3.new(1,0.717647,0)
 		VerLabel.Text = "Ver."..CurrentVer
-		
+
 		MessageLabel.BackgroundTransparency = 1
 		MessageLabel.Position = UDim2.new(0.107,0,0.332,0)
 		MessageLabel.Size = UDim2.new(0.782,0,0.109,0)
@@ -286,7 +302,7 @@ function MakeGUI()
 		MessageLabel.TextScaled = true
 		MessageLabel.TextWrapped = true
 		MessageLabel.TextColor3 = Color3.new(1,0.717647,0)
-		
+
 		ReCheckButton.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
 		ReCheckButton.BackgroundTransparency = 0.4
 		ReCheckButton.BorderColor3 = Color3.new(1,0.705882,0.0196078)
@@ -294,7 +310,7 @@ function MakeGUI()
 		ReCheckButton.Position = UDim2.new(0.833,0,0.069,0)
 		ReCheckButton.Size = UDim2.new(0.11,0,0.18,0)
 		ReCheckButton.Image = "rbxassetid://13364258627"
-		
+
 		UpdateVerButton.BackgroundColor3 = Color3.new(0.0705882,0.623529,0.00784314)
 		UpdateVerButton.BorderColor3 = Color3.new(0,0,0)
 		UpdateVerButton.BorderSizePixel = 1
@@ -305,7 +321,7 @@ function MakeGUI()
 		UpdateVerButton.TextScaled = true
 		UpdateVerButton.TextWrapped = true
 		UpdateVerButton.Text = "Yes"
-		
+
 		IgnoreVerButton.BackgroundColor3 = Color3.new(0.588235,0,0)
 		IgnoreVerButton.BorderColor3 = Color3.new(0,0,0)
 		IgnoreVerButton.BorderSizePixel = 1
@@ -316,7 +332,7 @@ function MakeGUI()
 		IgnoreVerButton.TextScaled = true
 		IgnoreVerButton.TextWrapped = true
 		IgnoreVerButton.Text = "No"
-		
+
 		UpdsUI.BackgroundColor3 = Color3.new(0.211765,0,0.403922)
 		UpdsUI.BackgroundTransparency = 0.2
 		UpdsUI.BorderColor3 = Color3.new(1,0.639216,0.0196078)
@@ -326,7 +342,7 @@ function MakeGUI()
 		UpdsUI.CanvasSize = UDim2.new(0,0,1,0)
 		UpdsUI.ScrollBarImageColor3 = Color3.new(1,0.713725,0.00392157)
 		UpdsUI.ScrollBarThickness = 6
-		
+
 		UpdsTitle.BackgroundTransparency = 1
 		UpdsTitle.Position = UDim2.new(0.222,0,0.02,0)
 		UpdsTitle.Size = UDim2.new(0.558,0,0.029,0)
@@ -337,11 +353,11 @@ function MakeGUI()
 		UpdsTitle.TextScaled = true
 		UpdsTitle.TextWrapped = true
 		UpdsTitle.TextSize = 14
-		
+
 		UpdsTitleUnderLine.BackgroundColor3 = Color3.new(1,0.74902,0)
 		UpdsTitleUnderLine.Position = UDim2.new(0,0,1,0)
 		UpdsTitleUnderLine.Size = UDim2.new(1,0,0.1,0)
-		
+
 		UpdsMessage.BackgroundTransparency = 1
 		UpdsMessage.Position = UDim2.new(0.15,0,0.1,0)
 		UpdsMessage.Size = UDim2.new(0.7,0,0.03,0)
@@ -351,20 +367,20 @@ function MakeGUI()
 		UpdsMessage.TextWrapped = true
 		UpdsMessage.TextColor3 = Color3.new(1,0.74902,0)
 		UpdsMessage.Text = "...Loading data..."
-		
+
 	end
-	
+
 	local function One(TargetPlayer)
 		player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,10,0)
 	end
-	
+
 	local function Two(TargetPlayer)
 		Until1 = true
 		repeat player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,0,3) wait()
 		until Until1 == false
 
 	end
-	
+
 	local function MakeCmdList()
 		for i,Cmd in ipairs(CmdsName)  do
 			local cmd = Instance.new("TextLabel",CmdList)
@@ -399,9 +415,9 @@ function MakeGUI()
 			cmd.Font = Enum.Font.SourceSansBold
 		end
 	end
-	
+
 	MakeCmdList()
-	
+
 	local function Output(Text,Time)
 		OutputText.Visible = true
 		OutputText.Text = Text
@@ -409,14 +425,6 @@ function MakeGUI()
 		OutputText.Text = ""
 		OutputText.Visible = false
 	end
-	
-	RunService.Heartbeat:Connect(function()
-		wait(0.25)
-		local Player = game.Workspace:FindFirstChild(player.Name)
-		Player.Humanoid.UseJumpPower = false
-		Player.Humanoid.JumpHeight = _G.Jump
-		Player.Humanoid.WalkSpeed = _G.Speed
-	end)
 
 	JumpText.Changed:Connect(function()
 		_G.Jump = JumpText.Text
@@ -426,16 +434,60 @@ function MakeGUI()
 		_G.Speed = WalkText.Text
 	end)
 	
+	WalkToggle.Activated:Connect(function()
+		if not IsWalking then
+			IsWalking = true
+			WalkToggle.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+			WalkToggle.Text = "on"
+			RunWalk = RunService.Heartbeat:Connect(function()			
+				local Player = game.Workspace:FindFirstChild(player.Name)
+				Player.Humanoid.WalkSpeed = _G.Speed
+				wait(0.25)
+			end)
+		else
+			IsWalking = false
+			WalkToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
+			WalkToggle.Text = "off"
+			RunWalk:Disconnect()
+			wait(0.25)
+			local Player = game.Workspace:FindFirstChild(player.Name)
+			Player.Humanoid.WalkSpeed = 16
+		end
+	end)
+	
+	JumpToggle.Activated:Connect(function()
+		if not IsJumping then
+			IsJumping = true
+			JumpToggle.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+			JumpToggle.Text = "on"
+			RunJump = RunService.Heartbeat:Connect(function()			
+				local Player = game.Workspace:FindFirstChild(player.Name)
+				Player.Humanoid.UseJumpPower = false
+				Player.Humanoid.JumpHeight = _G.Jump
+				wait(0.25)
+			end)
+		else
+			IsJumping = false
+			JumpToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
+			JumpToggle.Text = "off"
+			RunJump:Disconnect()
+			wait(0.25)
+			local Player = game.Workspace:FindFirstChild(player.Name)
+			Player.Humanoid.UseJumpPower = true
+			Player.Humanoid.JumpHeight = 7.2
+		end
+	end)
+
 	close.Activated:Connect(function()
 		if not isClose then isClose = true frame.Visible = false close.ImageColor3 = Color3.new(1, 1, 1)
 		elseif isClose == true then isClose = false frame.Visible = true close.ImageColor3 = Color3.new(0.611765, 0.611765, 0.611765) end 
 	end)
-	
+
 	CmdListButton.Activated:Connect(function()
 		if not CmdClose then CmdClose = true CmdList.Visible = false CmdListButton.BackgroundColor3 = Color3.new(0.368627,0.00392157,0.670588)
 		elseif CmdClose then CmdClose = false CmdList.Visible = true CmdListButton.BackgroundColor3 = Color3.new(0.254902, 0, 0.478431) end
 	end)
-	
+
 	local function CheckPlayer(PlayerName)
 		for _,p in ipairs(game.Workspace:GetDescendants()) do
 			if p:FindFirstChild("Humanoid") then
@@ -445,7 +497,7 @@ function MakeGUI()
 			end
 		end
 	end
-	
+
 	CommandBox.FocusLost:Connect(function(EnterPressed)
 		if EnterPressed then
 			local RightCmd = false
@@ -454,11 +506,11 @@ function MakeGUI()
 					RightCmd = true
 					local prefix = key..cmd
 					local StartIndex = string.find(CommandBox.Text,prefix.." ")
-					
+
 					if StartIndex then
 						local PlayerName = string.sub(CommandBox.Text,StartIndex+#prefix+1)
 						local TargetPlayer = CheckPlayer(PlayerName)
-						
+
 						if TargetPlayer and TargetPlayer~= nil then
 							if cmd == "to" then
 								player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,10,0)
@@ -479,40 +531,42 @@ function MakeGUI()
 			end
 		end
 	end)
-	
+
 	PlayerMarkUpButton.Activated:Connect(function()
 		if not _G.IsMarkUppingP then
 			_G.IsMarkUppingP = true PlayerMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
 			wait(0.1)
-			for i,p in ipairs(game:GetService("Players"):GetChildren()) do
-				local Highlight = Instance.new("Highlight")
-				Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "MarkSpell" Highlight.Parent = p.Character
+			for i,p in pairs(game:GetService("Players"):GetChildren()) do
+				if not p:FindFirstChild("PMarkSpell") then
+					local Highlight = Instance.new("Highlight")
+					Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "PMarkSpell" Highlight.Parent = p.Character
+				end
 			end
-		elseif _G.IsMarkUppingP == true then
+		elseif _G.IsMarkUppingP then
 			_G.IsMarkUppingP = false PlayerMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
-			for i,p in ipairs(game:GetService("Players"):GetChildren()) do
-				if p.Character:FindFirstChild("MarkSpell") then
-					p.Character.MarkSpell:Destroy()
+			for i,p in pairs(game:GetService("Players"):GetChildren()) do
+				if p.Character:FindFirstChild("PMarkSpell") then
+					p.Character.PMarkSpell:Destroy()
 				end
 			end
 		end
 	end)
-	
+
 	NPCMarkUpButton.Activated:Connect(function()
-		if not _G.IsMarkUpping then
-			_G.IsMarkUpping = true NPCMarkUpButton.Text = "on" NPCMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+		if not _G.IsMarkUppingN then
+			_G.IsMarkUppingN = true NPCMarkUpButton.BackgroundColor3 = Color3.new(0, 0.486275, 0.713725)
 			wait(0.1)
-			for i,obj in ipairs(game.Workspace:GetDescendants()) do
-				if obj:FindFirstChild("Humanoid") and not obj:FindFirstChild("MarkSpell") then
+			for i,obj in pairs(game.Workspace:GetDescendants()) do
+				if obj:FindFirstChild("Humanoid") and not obj:FindFirstChild("NMarkSpell") then
 					local Highlight = Instance.new("Highlight")
-					Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "MarkSpell" Highlight.Parent = obj
+					Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "NMarkSpell" Highlight.Parent = obj
 				end
 			end
-		elseif _G.IsMarkUpping == true then
-			_G.IsMarkUpping = false NPCMarkUpButton.Text = "off" NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
-			for i,obj in ipairs(game.Workspace:GetDescendants()) do
-				if obj:FindFirstChild("MarkSpell") then
-					obj.MarkSpell:Destroy()
+		elseif _G.IsMarkUppingN then
+			_G.IsMarkUppingN = false NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			for i,obj in pairs(game.Workspace:GetDescendants()) do
+				if obj:FindFirstChild("NMarkSpell") then
+					obj.NMarkSpell:Destroy()
 				end
 			end
 		end
@@ -541,7 +595,7 @@ function MakeGUI()
 							local OldColor = Instance.new("Color3Value",Check)
 							OldColor.Name = "OldColor"
 							OldColor.Value = RaycastResult.Instance.Color
-							
+
 							RaycastResult.Instance.CanCollide = false
 							RaycastResult.Instance.Transparency = 1
 						end
@@ -567,7 +621,7 @@ function MakeGUI()
 			end
 		end
 	end)
-	
+
 	ShowButton.Activated:Connect(function()
 		if not Showing then
 			Showing = true ShowButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
@@ -589,16 +643,16 @@ function MakeGUI()
 			end
 		end
 	end)
-	
+
 	FlyButton.Activated:Connect(function()
 		Output("Coming soon",1)
 	end)
-	
+
 	local function Explorer()
 		local ExplorerFlame = Instance.new("ScrollingFrame",gui)
-		
+
 	end
-	
+
 	ExplorerButton.Activated:Connect(function()
 		if not ExplorerClose then
 			ExplorerClose = true ExplorerButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725) ExplorerButton.Text = "On"
@@ -608,13 +662,13 @@ function MakeGUI()
 		end
 		Output("Coming Soon",1)
 	end)
-	
+
 	VerButton.Activated:Connect(function()
 		if not VerButtonO then
 			VerButtonO = true VerMessage.Visible = true VerButton.BackgroundColor3 = Color3.new(0.12549,0,0.137255)
 			MessageLabel.Text = "...Checking version..."
 			local success,responce = pcall(function()
-				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Ver.lua",true))()
+				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book/main/Ver.lua",true))()
 			end)
 			local GotVer = _G.GotVer
 			if success and GotVer then
@@ -625,8 +679,11 @@ function MakeGUI()
 						UpdateVerButton.Visible = false IgnoreVerButton.Visible = false VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 					end)
 					UpdateVerButton.Activated:Connect(function()
-						VerButtonO = false VerMessage.Visible = false
-						loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Console.lua",true))()
+						local success,responce = pcall(function()
+							return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book/main/Console.lua",true))()
+						end)
+						if not success then MessageLabel.Text = "Something went wrong! please try again." wait(2) end
+						VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 					end)
 				else
 					MessageLabel.Text = "Version is newest"
@@ -639,13 +696,13 @@ function MakeGUI()
 			VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745) MessageLabel.Text = ""
 		end
 	end)
-	
+
 	ReCheckButton.Activated:Connect(function()
 		if not ReChecked then
 			ReChecked = true
 			MessageLabel.Text = "...Checking version..."
 			local success,responce = pcall(function()
-				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Ver.lua",true))()
+				return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book/main/Ver.lua",true))()
 			end)	
 			local GotVer = _G.GotVer
 			if success and GotVer then
@@ -656,11 +713,15 @@ function MakeGUI()
 						UpdateVerButton.Visible = false IgnoreVerButton.Visible = false VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 					end)
 					UpdateVerButton.Activated:Connect(function()
-						VerButtonO = false VerMessage.Visible = false
-						loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Console.lua",true))()
+						local success,responce = pcall(function()
+							return loadstring(game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book/main/Console.lua",true))()
+						end)
+						if not success then MessageLabel.Text = "Something went wrong! please try again." wait(2) end
+						VerButtonO = false VerMessage.Visible = false VerButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745)
 					end)
 				else
 					MessageLabel.Text = "Version is newest"
+					_G.GotVer = nil
 				end
 			else
 				wait(0.1)
@@ -670,16 +731,16 @@ function MakeGUI()
 			ReChecked = false
 		end
 	end)
-	
+
 	UpdsButton.Activated:Connect(function()
 		if not IsUpdsOpen  then
 			IsUpdsOpen = true UpdsUI.Visible = true UpdsButton.BackgroundColor3 = Color3.new(0.12549,0,0.137255) UpdsMessage.Visible = true UpdsMessage.Text = "...Loading data..."
 			local success,UpdsData = pcall(function() 
-				return game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book-ver0.1.0-beta/main/Upds.json") 
+				return game:HttpGet("https://raw.githubusercontent.com/Wiizzzzzzzaaaaard/Wizards-Spell-Book/main/Upds.json") 
 			end)
 			if success then
 				UpdsMessage.Text = "" UpdsMessage.Visible = false
-				local LuaTable = HttpService:JSONDecode(UpdsData)
+      				local LuaTable = HttpService:JSONDecode(UpdsData)
 				local LastGUI
 				local Folder = Instance.new("Folder",UpdsUI) Folder.Name = "This"
 				for i,v in ipairs(LuaTable.ver) do
