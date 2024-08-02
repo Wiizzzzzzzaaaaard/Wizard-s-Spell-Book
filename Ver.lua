@@ -1,1 +1,1 @@
-_G.GotVer = "0.1.1-beta"
+_G.GotVer = "0.1.2-beta"
