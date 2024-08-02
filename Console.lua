@@ -740,7 +740,7 @@ function MakeGUI()
 			end)
 			if success then
 				UpdsMessage.Text = "" UpdsMessage.Visible = false
-      				local LuaTable = HttpService:JSONDecode(UpdsData)
+      			local LuaTable = HttpService:JSONDecode(UpdsData)
 				local LastGUI
 				local Folder = Instance.new("Folder",UpdsUI) Folder.Name = "This"
 				for i,v in ipairs(LuaTable.ver) do
