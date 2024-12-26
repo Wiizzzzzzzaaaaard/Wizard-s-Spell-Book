@@ -20,7 +20,7 @@
       ],
       [
         "Fixed some bugs",
-        "Fixed wsb won't work in low lvl executor",
+        "Made it work in all executor",
         "Upgraded MarkSpells. made it mark up color depends player team color"
       ]
     ],
