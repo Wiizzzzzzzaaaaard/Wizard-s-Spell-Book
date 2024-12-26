@@ -21,7 +21,7 @@
       [
         "Fixed some bugs",
         "Fixed wsb won't work in low lvl executor",
-        "Upgraded MarkSpells, made it mark up color depends player team color"
+        "Upgraded MarkSpells. made it mark up color depends player team color"
       ]
     ],
     "NextUpdatesPlan": [
