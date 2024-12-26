@@ -4,8 +4,10 @@ local player = game.Players.LocalPlayer
 local cloneref = cloneref or function(o) return o end
 local COREGUI = cloneref(game:GetService("CoreGui"))
 
+
 function MakeGUI()
-	local gui = Instance.new("ScreenGui",COREGUI) gui.Name = "Wizard's Spell Book"	
+	local gui = Instance.new("ScreenGui") gui.Name = "Wizard's Spell Book" 
+	local success = pcall(function() gui.Parent = COREGUI end) if not success then gui.Parent = player.PlayerGui end
 	local frame = Instance.new("Frame",gui)
 	local close = Instance.new("ImageButton",gui)
 	local CloseCorner = Instance.new("UICorner",close)
@@ -62,8 +64,8 @@ function MakeGUI()
 	local Until1 = false
 	local OldPosition = nil
 	local OldPosition2 = nil
-	_G.IsMarkUppingP = false
-	_G.IiMarkUppingN = false
+	_G.RMP = nil
+	_G.RMN = nil
 	local Cmds = {"to","lock"}
 	local CmdsTitle = {";to [PlayerName]",";lock [Distance] [PlayerName]"}
 	local CmdsName = {"tp","lock"}
@@ -73,12 +75,11 @@ function MakeGUI()
 	local VerButtonO = false
 	local ReChecked = false
 	local IsUpdsOpen = false
-	local RunMarkN
-	local RunMarkP
 	local IsWalking = false
 	local IsJumping = false
 
-	local CurrentVer = "0.1.2-beta"
+
+	local CurrentVer = "0.1.3-beta"
 
 
 	do
@@ -111,7 +112,7 @@ function MakeGUI()
 		WalkLabel.Size = UDim2.new(0.262,0,0.062,0)
 		WalkLabel.Text = "WalkSpeed"
 		WalkLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
-		
+
 		WalkToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
 		WalkToggle.Position = UDim2.new(0.56,0,0.039,0)
 		WalkToggle.Size = UDim2.new(0.06,0,0.05,0)
@@ -129,7 +130,7 @@ function MakeGUI()
 		JumpLabel.Size = UDim2.new(0.262,0,0.062,0)
 		JumpLabel.Text = "JumpHeight"
 		JumpLabel.TextColor3 = Color3.new(1,0.854902,0.0196078)
-		
+
 		JumpToggle.BackgroundColor3 = Color3.new(0.537255,0,0)
 		JumpToggle.Position = UDim2.new(0.56,0,0.11,0)
 		JumpToggle.Size = UDim2.new(0.06,0,0.05,0)
@@ -433,7 +434,7 @@ function MakeGUI()
 	WalkText.Changed:Connect(function()
 		_G.Speed = WalkText.Text
 	end)
-	
+
 	WalkToggle.Activated:Connect(function()
 		if not IsWalking then
 			IsWalking = true
@@ -454,7 +455,7 @@ function MakeGUI()
 			Player.Humanoid.WalkSpeed = 16
 		end
 	end)
-	
+
 	JumpToggle.Activated:Connect(function()
 		if not IsJumping then
 			IsJumping = true
@@ -513,7 +514,7 @@ function MakeGUI()
 
 						if TargetPlayer and TargetPlayer~= nil then
 							if cmd == "to" then
-								player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,10,0)
+								player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame
 							elseif cmd == "lock" then
 								Until1 = true
 								repeat player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame.LookVector * Vector3.new(0,0,5) wait()
@@ -533,17 +534,30 @@ function MakeGUI()
 	end)
 
 	PlayerMarkUpButton.Activated:Connect(function()
-		if not _G.IsMarkUppingP then
-			_G.IsMarkUppingP = true PlayerMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
+		if not _G.RMP then
+			PlayerMarkUpButton.BackgroundColor3 = Color3.new(0,0.486275,0.713725)
 			wait(0.1)
-			for i,p in pairs(game:GetService("Players"):GetChildren()) do
-				if not p:FindFirstChild("PMarkSpell") then
-					local Highlight = Instance.new("Highlight")
-					Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "PMarkSpell" Highlight.Parent = p.Character
+			_G.RMP = RunService.RenderStepped:Connect(function()
+				for i,p in pairs(game:GetService("Players"):GetChildren()) do					
+					if not p.Character:FindFirstChild("PMarkSpell") then
+						local Highlight = Instance.new("Highlight",p.Character)
+						Highlight.FillTransparency = 1 Highlight.OutlineColor = p.TeamColor.Color Highlight.OutlineTransparency = 0 Highlight.Name = "PMarkSpell"					
+						if p.Team == nil then
+							Highlight.OutlineColor = Color3.new(0,1,0.85098)
+						end
+					else
+						local PMS = p.Character:FindFirstChild("PMarkSpell")
+						PMS.OutlineColor = p.TeamColor.Color
+						if p.Team == nil then
+							PMS.OutlineColor = Color3.new(0,1,0.85098)
+						end
+					end
 				end
-			end
-		elseif _G.IsMarkUppingP then
-			_G.IsMarkUppingP = false PlayerMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			end)
+		elseif _G.RMP then
+			PlayerMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			_G.RMP:Disconnect()
+			_G.RMP = nil
 			for i,p in pairs(game:GetService("Players"):GetChildren()) do
 				if p.Character:FindFirstChild("PMarkSpell") then
 					p.Character.PMarkSpell:Destroy()
@@ -553,17 +567,21 @@ function MakeGUI()
 	end)
 
 	NPCMarkUpButton.Activated:Connect(function()
-		if not _G.IsMarkUppingN then
-			_G.IsMarkUppingN = true NPCMarkUpButton.BackgroundColor3 = Color3.new(0, 0.486275, 0.713725)
+		if not _G.RMN then
+			NPCMarkUpButton.BackgroundColor3 = Color3.new(0, 0.486275, 0.713725)
 			wait(0.1)
-			for i,obj in pairs(game.Workspace:GetDescendants()) do
-				if obj:FindFirstChild("Humanoid") and not obj:FindFirstChild("NMarkSpell") then
-					local Highlight = Instance.new("Highlight")
-					Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "NMarkSpell" Highlight.Parent = obj
+			_G.RMN = RunService.RenderStepped:Connect(function()
+				for i,obj in pairs(game.Workspace:GetDescendants()) do
+					if obj:FindFirstChild("Humanoid") and not obj:FindFirstChild("NMarkSpell") then
+						local Highlight = Instance.new("Highlight",obj)
+						Highlight.FillTransparency = 1 Highlight.OutlineColor = Color3.new(0,1,0.85098) Highlight.OutlineTransparency = 0 Highlight.Name = "NMarkSpell"
+					end
 				end
-			end
-		elseif _G.IsMarkUppingN then
-			_G.IsMarkUppingN = false NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			end)
+		elseif _G.RMN then
+			NPCMarkUpButton.BackgroundColor3 = Color3.new(0.541176,0,0)
+			_G.RMN:Disconnect()
+			_G.RMN = nil
 			for i,obj in pairs(game.Workspace:GetDescendants()) do
 				if obj:FindFirstChild("NMarkSpell") then
 					obj.NMarkSpell:Destroy()
@@ -740,7 +758,7 @@ function MakeGUI()
 			end)
 			if success then
 				UpdsMessage.Text = "" UpdsMessage.Visible = false
-      			local LuaTable = HttpService:JSONDecode(UpdsData)
+				local LuaTable = HttpService:JSONDecode(UpdsData)
 				local LastGUI
 				local Folder = Instance.new("Folder",UpdsUI) Folder.Name = "This"
 				for i,v in ipairs(LuaTable.ver) do
@@ -843,17 +861,25 @@ function MakeGUI()
 end
 
 function Find()
+	local Target = nil
 	for i,child in game:GetService("CoreGui"):GetChildren() do
 		if child.Name == "Wizard's Spell Book" then
-			return child
+			Target = child
 		end
 	end
+	for i,a in player.PlayerGui:GetChildren() do
+		if a.Name == "Wizard's Spell Book" then
+			Target = a
+		end
+	end
+	return Target
 end
 
 do 
 	local WizardsSpellBook = Find()
 	if WizardsSpellBook then
-		local AnnounceGUI = Instance.new("ScreenGui",cloneref) AnnounceGUI.Name = "AnnounceGUI"
+		local AnnounceGUI = Instance.new("ScreenGui") AnnounceGUI.Name = "AnnounceGUI"
+		local Success = pcall(function() AnnounceGUI.Parent = cloneref end) if not Success then AnnounceGUI.Parent = player.PlayerGui end
 		local Frame = Instance.new("Frame")
 		Frame.Parent = AnnounceGUI
 		Frame.Size = UDim2.new(0.46,0,0.323,0) Frame.BackgroundColor3 = Color3.new(0.247059,0,0.372549) Frame.Position = UDim2.new(0.269,0,0.06,0) Frame.BorderSizePixel = 2
