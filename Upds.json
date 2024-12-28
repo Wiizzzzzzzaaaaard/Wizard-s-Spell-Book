@@ -9,10 +9,10 @@
     "detail": [
         [
             "THIS WILL BE LAST UPDATE BEFORE RENEWAL!",
-            "+Make it draggable",
+            "Make it draggable",
             "Fixed lock command",
             "Fixed some bugs",
-            "+Made it version will written in descending."
+            "Made it version will written in descending."
         ],
         [
             "Fixed some bugs",
@@ -26,8 +26,8 @@
             "Fixed markup spell"
          ],
         [       
-            "+Coming soon message",
-            "+Updates menu and version checker(auto)",
+            "Coming soon message",
+            "Updates menu and version checker(auto)",
             "Fixed some bugs"
         ],
       [""]    
