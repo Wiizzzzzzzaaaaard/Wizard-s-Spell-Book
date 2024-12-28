@@ -52,7 +52,6 @@ function MakeGUI()
 	local UserInputService = game:GetService("UserInputService")
 	local HttpService = game:GetService("HttpService")
 
-	gui.ResetOnSpawn = false
 	local isClose = false
 	local key = ";"
 	_G.Jump = 7.2
@@ -66,8 +65,8 @@ function MakeGUI()
 	local OldPosition2 = nil
 	_G.RMP = nil
 	_G.RMN = nil
-	local Cmds = {"to","lock"}
-	local CmdsTitle = {";to [PlayerName]",";lock [Distance] [PlayerName]"}
+	local Cmds = {"to","lock","unlock"}
+	local CmdsTitle = {";to [PlayerName]",";lock [PlayerName]",";unlock"}
 	local CmdsName = {"tp","lock"}
 	local CmdClose = true
 	local ExplorerClose = false
@@ -79,14 +78,16 @@ function MakeGUI()
 	local IsJumping = false
 
 
-	local CurrentVer = "0.1.3-beta"
+	local CurrentVer = "0.1.4-beta"
 
 
 	do
+		gui.ResetOnSpawn = false
 		gui.DisplayOrder = 1000000000
 
 		frame.BackgroundColor3 = Color3.new(0.0941176,0.00784314,0.34902) 
-		frame.Position = UDim2.new(0.005,0,0.59,0) frame.Size = UDim2.new(0.4,0,0.4,0) 
+		frame.Position = UDim2.new(0.2,0,0.8,0) frame.Size = UDim2.new(0.4,0,0.4,0) 
+		frame.AnchorPoint = Vector2.new(0.5,0.5)
 
 		close.BackgroundTransparency = 1
 		close.ImageColor3 = Color3.new(0.611765, 0.611765, 0.611765)
@@ -517,13 +518,18 @@ function MakeGUI()
 								player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame
 							elseif cmd == "lock" then
 								Until1 = true
-								repeat player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame.LookVector * Vector3.new(0,0,5) wait()
-								until Until1 == false
+								Output("Success!",1)
+								repeat player.Character.PrimaryPart.CFrame = TargetPlayer.PrimaryPart.CFrame + Vector3.new(0,0,5) wait()
+								until Until1 == false							
 							end
-							Output("Success!",1)
 						else
 							Output("Player not found..",1)
 						end
+					end
+
+					if cmd == "unlock" then
+						Until1 = false	
+						Output("Success!",1)
 					end
 				end
 			end
@@ -858,6 +864,30 @@ function MakeGUI()
 			IsUpdsOpen = false UpdsUI.Visible = false UpdsButton.BackgroundColor3 = Color3.new(0.239216,0,0.262745) UpdsUI:FindFirstChild("This"):Destroy()	
 		end
 	end)
+
+	frame.InputBegan:Connect(function(Input)
+		local InputPositionV2 = Vector2.new(Input.Position.X,Input.Position.Y)
+		local Difference = InputPositionV2-frame.AbsolutePosition
+		print(Difference)
+		
+		local FirstMousePosition = UserInputService:GetMouseLocation()
+		local Inputs = {"MouseButton1","Touch"}
+		if table.find(Inputs,Input.UserInputType.Name) then
+			Drag = RunService.Heartbeat:Connect(function()
+				local MousePosition = UserInputService:GetMouseLocation()
+				if FirstMousePosition~=MousePosition and Difference.X>=440 or Difference.X<=18 or Difference.Y>=170 or Difference.Y<=10  then
+					frame.Position = UDim2.new(0,MousePosition.X,0,MousePosition.Y)
+				end				
+			end)
+			UserInputService.InputEnded:Connect(function(Input)
+				if table.find(Inputs,Input.UserInputType.Name) and Drag then
+					Drag:Disconnect()
+					Drag = nil
+				end
+			end)
+		end
+	end)
+
 end
 
 function Find()
