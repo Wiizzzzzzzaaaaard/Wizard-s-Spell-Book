@@ -875,7 +875,7 @@ function MakeGUI()
 		if table.find(Inputs,Input.UserInputType.Name) then
 			Drag = RunService.Heartbeat:Connect(function()
 				local MousePosition = UserInputService:GetMouseLocation()
-				if FirstMousePosition~=MousePosition and Difference.X>=440 or Difference.X<=18 or Difference.Y>=170 or Difference.Y<=10  then
+				if FirstMousePosition~=MousePosition then
 					frame.Position = UDim2.new(0,MousePosition.X,0,MousePosition.Y)
 				end				
 			end)
