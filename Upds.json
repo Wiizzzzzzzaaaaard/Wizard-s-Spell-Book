@@ -8,7 +8,11 @@
     ],
     "detail": [
         [
-          "Added 
+            "THIS WILL BE LAST UPDATE BEFORE RENEWAL!",
+            "+Make it draggable",
+            "Fixed lock command",
+            "Fixed some bugs",
+            "+Made it version will written in descending."
         ],
         [
             "Fixed some bugs",
@@ -29,7 +33,7 @@
       [""]    
     ],
     "NextUpdatesPlan": [
-      "BIG PLAN- Remake whole system and make whole new GUI. It's on going",
+      "BIG PLAN- Remake whole system and make whole new GUI. It's on going!",
       "Explorer"
     ]
   }
