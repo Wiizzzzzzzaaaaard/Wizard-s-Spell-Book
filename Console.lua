@@ -78,7 +78,7 @@ function MakeGUI()
 	local IsJumping = false
 
 
-	local CurrentVer = "0.1.4-beta"
+	local CurrentVer = "0.2.0-beta"
 
 
 	do
